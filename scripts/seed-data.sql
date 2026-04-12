@@ -2,6 +2,7 @@
 -- Seed data for ClaudeProjectBackend (development only)
 -- Run AFTER migrations: dotnet ef database update
 --
+-- IDs are fixed Snowflake-style bigints (app normally generates them).
 -- Passwords are BCrypt hashes. Plaintext values:
 --   admin@example.com  → Admin@123!
 --   user@example.com   → User@123!
@@ -11,7 +12,7 @@ IF NOT EXISTS (SELECT 1 FROM Users WHERE Email = 'admin@example.com')
 BEGIN
     INSERT INTO Users (Id, Email, FirstName, LastName, PasswordHash, Role, CreatedAt, CreatedBy)
     VALUES (
-        NEWID(),
+        375296004000000001,       -- fixed Snowflake-style bigint
         'admin@example.com',
         'Admin',
         'User',
@@ -26,7 +27,7 @@ IF NOT EXISTS (SELECT 1 FROM Users WHERE Email = 'user@example.com')
 BEGIN
     INSERT INTO Users (Id, Email, FirstName, LastName, PasswordHash, Role, CreatedAt, CreatedBy)
     VALUES (
-        NEWID(),
+        375296004000000002,       -- fixed Snowflake-style bigint
         'user@example.com',
         'Regular',
         'User',

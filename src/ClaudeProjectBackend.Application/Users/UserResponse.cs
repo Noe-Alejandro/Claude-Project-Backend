@@ -4,7 +4,7 @@ using ClaudeProjectBackend.Domain.Enums;
 namespace ClaudeProjectBackend.Application.Users;
 
 public sealed record UserResponse(
-    Guid Id,
+    string Id,          // long serialised as string — avoids JS Number precision loss
     string Email,
     string FirstName,
     string LastName,
@@ -15,7 +15,7 @@ public sealed record UserResponse(
     DateTimeOffset? LastLoginAt)
 {
     public static UserResponse FromEntity(User user) => new(
-        user.Id,
+        user.Id.ToString(),
         user.Email,
         user.FirstName,
         user.LastName,

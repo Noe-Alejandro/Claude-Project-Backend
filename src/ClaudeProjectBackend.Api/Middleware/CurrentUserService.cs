@@ -6,7 +6,7 @@ namespace ClaudeProjectBackend.Api.Middleware;
 
 public sealed class CurrentUserService : ICurrentUserService
 {
-    public Guid UserId { get; }
+    public long UserId { get; }
     public string Email { get; }
     public UserRole Role { get; }
     public bool IsAdmin => Role == UserRole.Admin;
@@ -15,8 +15,8 @@ public sealed class CurrentUserService : ICurrentUserService
     {
         var claims = accessor.HttpContext?.User;
 
-        UserId = Guid.TryParse(
-            claims?.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : Guid.Empty;
+        UserId = long.TryParse(
+            claims?.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : 0L;
 
         Email = claims?.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
 

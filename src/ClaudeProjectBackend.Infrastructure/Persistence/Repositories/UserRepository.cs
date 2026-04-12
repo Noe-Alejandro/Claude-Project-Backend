@@ -13,7 +13,7 @@ public sealed class UserRepository : IUserRepository
         _context = context;
     }
 
-    public async Task<User?> GetByIdAsync(Guid id, CancellationToken ct = default)
+    public async Task<User?> GetByIdAsync(long id, CancellationToken ct = default)
         => await _context.Users.FindAsync([id], ct);
 
     public async Task<User?> GetByEmailAsync(string email, CancellationToken ct = default)

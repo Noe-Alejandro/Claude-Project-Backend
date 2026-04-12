@@ -21,6 +21,8 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
+        // Singleton: the sequence counter must be shared across all requests
+        services.AddSingleton<ISnowflakeIdGenerator, SnowflakeIdGenerator>();
 
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 

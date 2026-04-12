@@ -28,10 +28,10 @@ public sealed class UsersController : ControllerBase
         => Ok(await _userService.ListAsync(query, ct));
 
     /// <summary>Get a user by id.</summary>
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:long}")]
     [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<UserResponse>> GetById(Guid id, CancellationToken ct)
+    public async Task<ActionResult<UserResponse>> GetById(long id, CancellationToken ct)
         => Ok(await _userService.GetAsync(id, ct));
 
     /// <summary>Create a new user. Admin only.</summary>
@@ -47,11 +47,11 @@ public sealed class UsersController : ControllerBase
     }
 
     /// <summary>Delete a user. Admin only.</summary>
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("{id:long}")]
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
+    public async Task<IActionResult> Delete(long id, CancellationToken ct)
     {
         await _userService.DeleteAsync(id, ct);
         return NoContent();

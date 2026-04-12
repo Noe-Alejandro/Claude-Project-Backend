@@ -15,14 +15,18 @@ public sealed class AuthService : IAuthService
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
     private readonly IPasswordHasher _passwordHasher;
 
+    private readonly ISnowflakeIdGenerator _snowflake;
+
     public AuthService(
         IUserRepository userRepository,
         IJwtTokenGenerator jwtTokenGenerator,
-        IPasswordHasher passwordHasher)
+        IPasswordHasher passwordHasher,
+        ISnowflakeIdGenerator snowflake)
     {
         _userRepository = userRepository;
         _jwtTokenGenerator = jwtTokenGenerator;
         _passwordHasher = passwordHasher;
+        _snowflake = snowflake;
     }
 
     public async Task<LoginResponse> LoginAsync(LoginRequest request, CancellationToken ct = default)
@@ -48,7 +52,7 @@ public sealed class AuthService : IAuthService
 
         var user = new User
         {
-            Id = Guid.NewGuid(),
+            Id = _snowflake.NewId(),
             Email = request.Email.ToLowerInvariant(),
             FirstName = request.FirstName,
             LastName = request.LastName,

@@ -4,7 +4,7 @@ namespace ClaudeProjectBackend.Domain.Repositories;
 
 public interface IUserRepository
 {
-    Task<User?> GetByIdAsync(Guid id, CancellationToken ct = default);
+    Task<User?> GetByIdAsync(long id, CancellationToken ct = default);
     Task<User?> GetByEmailAsync(string email, CancellationToken ct = default);
     Task<(IReadOnlyList<User> Items, int Total)> ListAsync(int page, int pageSize, CancellationToken ct = default);
     Task<User> AddAsync(User user, CancellationToken ct = default);

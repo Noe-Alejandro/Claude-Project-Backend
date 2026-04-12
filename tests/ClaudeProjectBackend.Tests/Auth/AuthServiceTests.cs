@@ -5,11 +5,13 @@ public sealed class AuthServiceTests
     private readonly IUserRepository _userRepository = Substitute.For<IUserRepository>();
     private readonly IJwtTokenGenerator _jwtTokenGenerator = Substitute.For<IJwtTokenGenerator>();
     private readonly IPasswordHasher _passwordHasher = Substitute.For<IPasswordHasher>();
+    private readonly ISnowflakeIdGenerator _snowflake = Substitute.For<ISnowflakeIdGenerator>();
     private readonly AuthService _sut;
 
     public AuthServiceTests()
     {
-        _sut = new AuthService(_userRepository, _jwtTokenGenerator, _passwordHasher);
+        _snowflake.NewId().Returns(375296004000000099L);
+        _sut = new AuthService(_userRepository, _jwtTokenGenerator, _passwordHasher, _snowflake);
     }
 
     // ── LoginAsync ────────────────────────────────────────────────────────────
@@ -19,7 +21,7 @@ public sealed class AuthServiceTests
     {
         var user = new User
         {
-            Id = Guid.NewGuid(),
+            Id = 375296004000000001L,
             Email = "test@example.com",
             FirstName = "Jane",
             LastName = "Doe",

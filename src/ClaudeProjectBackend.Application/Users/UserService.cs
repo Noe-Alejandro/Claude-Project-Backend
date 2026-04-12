@@ -12,14 +12,19 @@ public sealed class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
+    private readonly ISnowflakeIdGenerator _snowflake;
 
-    public UserService(IUserRepository userRepository, IPasswordHasher passwordHasher)
+    public UserService(
+        IUserRepository userRepository,
+        IPasswordHasher passwordHasher,
+        ISnowflakeIdGenerator snowflake)
     {
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
+        _snowflake = snowflake;
     }
 
-    public async Task<UserResponse> GetAsync(Guid id, CancellationToken ct = default)
+    public async Task<UserResponse> GetAsync(long id, CancellationToken ct = default)
     {
         var user = await _userRepository.GetByIdAsync(id, ct)
             ?? throw new NotFoundException(nameof(User), id);
@@ -46,7 +51,7 @@ public sealed class UserService : IUserService
 
         var user = new User
         {
-            Id = Guid.NewGuid(),
+            Id = _snowflake.NewId(),
             Email = request.Email.ToLowerInvariant(),
             FirstName = request.FirstName,
             LastName = request.LastName,
@@ -60,7 +65,7 @@ public sealed class UserService : IUserService
         return UserResponse.FromEntity(user);
     }
 
-    public async Task DeleteAsync(Guid id, CancellationToken ct = default)
+    public async Task DeleteAsync(long id, CancellationToken ct = default)
     {
         var user = await _userRepository.GetByIdAsync(id, ct)
             ?? throw new NotFoundException(nameof(User), id);

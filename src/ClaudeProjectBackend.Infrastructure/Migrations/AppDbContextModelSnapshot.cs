@@ -24,9 +24,9 @@ namespace ClaudeProjectBackend.Infrastructure.Migrations
 
             modelBuilder.Entity("ClaudeProjectBackend.Domain.Entities.User", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("Id")
+                        .ValueGeneratedNever()
+                        .HasColumnType("bigint");
 
                     b.Property<string>("AvatarUrl")
                         .HasMaxLength(500)

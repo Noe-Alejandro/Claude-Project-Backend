@@ -4,11 +4,13 @@ public sealed class UserServiceTests
 {
     private readonly IUserRepository _userRepository = Substitute.For<IUserRepository>();
     private readonly IPasswordHasher _passwordHasher = Substitute.For<IPasswordHasher>();
+    private readonly ISnowflakeIdGenerator _snowflake = Substitute.For<ISnowflakeIdGenerator>();
     private readonly UserService _sut;
 
     public UserServiceTests()
     {
-        _sut = new UserService(_userRepository, _passwordHasher);
+        _snowflake.NewId().Returns(375296004000000001L);
+        _sut = new UserService(_userRepository, _passwordHasher, _snowflake);
     }
 
     // ── GetAsync ──────────────────────────────────────────────────────────────
@@ -16,13 +18,13 @@ public sealed class UserServiceTests
     [Fact]
     public async Task GetAsync_ExistingId_ReturnsUserResponse()
     {
-        var id = Guid.NewGuid();
+        const long id = 375296004000000001L;
         var user = new User { Id = id, Email = "u@example.com", FirstName = "A", LastName = "B" };
         _userRepository.GetByIdAsync(id).Returns(user);
 
         var result = await _sut.GetAsync(id);
 
-        result.Id.Should().Be(id);
+        result.Id.Should().Be(id.ToString());
         result.Email.Should().Be("u@example.com");
         result.FullName.Should().Be("A B");
     }
@@ -30,9 +32,9 @@ public sealed class UserServiceTests
     [Fact]
     public async Task GetAsync_UnknownId_ThrowsNotFoundException()
     {
-        _userRepository.GetByIdAsync(Arg.Any<Guid>()).Returns((User?)null);
+        _userRepository.GetByIdAsync(Arg.Any<long>()).Returns((User?)null);
 
-        await _sut.Invoking(s => s.GetAsync(Guid.NewGuid()))
+        await _sut.Invoking(s => s.GetAsync(999L))
             .Should().ThrowAsync<NotFoundException>();
     }
 
@@ -43,8 +45,8 @@ public sealed class UserServiceTests
     {
         var users = new List<User>
         {
-            new() { Id = Guid.NewGuid(), Email = "a@example.com", FirstName = "A", LastName = "A" },
-            new() { Id = Guid.NewGuid(), Email = "b@example.com", FirstName = "B", LastName = "B" },
+            new() { Id = 375296004000000001L, Email = "a@example.com", FirstName = "A", LastName = "A" },
+            new() { Id = 375296004000000002L, Email = "b@example.com", FirstName = "B", LastName = "B" },
         };
 
         _userRepository.ListAsync(1, 20).Returns(((IReadOnlyList<User>)users, 2));
@@ -87,7 +89,7 @@ public sealed class UserServiceTests
     [Fact]
     public async Task DeleteAsync_ExistingUser_Deletes()
     {
-        var id = Guid.NewGuid();
+        const long id = 375296004000000001L;
         var user = new User { Id = id };
         _userRepository.GetByIdAsync(id).Returns(user);
 
@@ -99,9 +101,9 @@ public sealed class UserServiceTests
     [Fact]
     public async Task DeleteAsync_UnknownId_ThrowsNotFoundException()
     {
-        _userRepository.GetByIdAsync(Arg.Any<Guid>()).Returns((User?)null);
+        _userRepository.GetByIdAsync(Arg.Any<long>()).Returns((User?)null);
 
-        await _sut.Invoking(s => s.DeleteAsync(Guid.NewGuid()))
+        await _sut.Invoking(s => s.DeleteAsync(999L))
             .Should().ThrowAsync<NotFoundException>();
     }
 }

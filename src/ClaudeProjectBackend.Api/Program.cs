@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using ClaudeProjectBackend.Api.Middleware;
 using ClaudeProjectBackend.Application;
 using ClaudeProjectBackend.Application.Common.Interfaces;
@@ -30,7 +31,13 @@ try
               .ReadFrom.Services(services));
 
     // ── Controllers ───────────────────────────────────────────────────────────────
-    builder.Services.AddControllers();
+    builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            // Serialize enums as camelCase strings (e.g. UserRole.Admin → "admin")
+            options.JsonSerializerOptions.Converters.Add(
+                new JsonStringEnumConverter(System.Text.Json.JsonNamingPolicy.CamelCase));
+        });
 
     // ── Application + Infrastructure ──────────────────────────────────────────────
     builder.Services.AddApplication();

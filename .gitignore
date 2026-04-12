@@ -18,7 +18,9 @@ project.lock.json
 project.fragment.lock.json
 
 # ── .NET secrets & sensitive config ──────────────────────────────────────────
-# Never commit production or local secrets
+# Never commit environment-specific overrides — share appsettings.Development.json
+# with your team out-of-band (password manager, onboarding doc, etc.)
+appsettings.Development.json
 appsettings.Production.json
 appsettings.Local.json
 appsettings.*.local.json

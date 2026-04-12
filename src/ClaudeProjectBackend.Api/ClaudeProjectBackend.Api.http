@@ -1,0 +1,6 @@
+@ClaudeProjectBackend.Api_HostAddress = http://localhost:5168
+
+GET {{ClaudeProjectBackend.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,14 @@
+global using ClaudeProjectBackend.Application.Auth;
+global using ClaudeProjectBackend.Application.Auth.Login;
+global using ClaudeProjectBackend.Application.Auth.Register;
+global using ClaudeProjectBackend.Application.Common.Exceptions;
+global using ClaudeProjectBackend.Application.Common.Interfaces;
+global using ClaudeProjectBackend.Application.Users;
+global using ClaudeProjectBackend.Application.Users.Create;
+global using ClaudeProjectBackend.Application.Users.List;
+global using ClaudeProjectBackend.Domain.Entities;
+global using ClaudeProjectBackend.Domain.Enums;
+global using ClaudeProjectBackend.Domain.Repositories;
+global using FluentAssertions;
+global using NSubstitute;
+global using Xunit;

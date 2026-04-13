@@ -3,6 +3,7 @@ using ClaudeProjectBackend.Application.Common.Exceptions;
 using ClaudeProjectBackend.Application.Common.Interfaces;
 using ClaudeProjectBackend.Application.Users.Create;
 using ClaudeProjectBackend.Application.Users.List;
+using ClaudeProjectBackend.Application.Users.UpdateAvatar;
 using ClaudeProjectBackend.Domain.Entities;
 using ClaudeProjectBackend.Domain.Repositories;
 
@@ -72,5 +73,17 @@ public sealed class UserService : IUserService
 
         await _userRepository.DeleteAsync(user, ct);
         await _userRepository.SaveChangesAsync(ct);
+    }
+
+    public async Task<UserResponse> UpdateAvatarAsync(long id, UpdateAvatarRequest request, CancellationToken ct = default)
+    {
+        var user = await _userRepository.GetByIdAsync(id, ct)
+            ?? throw new NotFoundException(nameof(User), id);
+
+        user.AvatarUrl = string.IsNullOrWhiteSpace(request.AvatarUrl) ? null : request.AvatarUrl.Trim();
+
+        await _userRepository.SaveChangesAsync(ct);
+
+        return UserResponse.FromEntity(user);
     }
 }

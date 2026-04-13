@@ -2,6 +2,7 @@ using ClaudeProjectBackend.Application.Common;
 using ClaudeProjectBackend.Application.Users;
 using ClaudeProjectBackend.Application.Users.Create;
 using ClaudeProjectBackend.Application.Users.List;
+using ClaudeProjectBackend.Application.Users.UpdateAvatar;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -56,4 +57,13 @@ public sealed class UsersController : ControllerBase
         await _userService.DeleteAsync(id, ct);
         return NoContent();
     }
+
+    /// <summary>Update a user's avatar URL. The user may update their own avatar; admins can update any.</summary>
+    [HttpPatch("{id:long}/avatar")]
+    [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<UserResponse>> UpdateAvatar(
+        long id, UpdateAvatarRequest request, CancellationToken ct)
+        => Ok(await _userService.UpdateAvatarAsync(id, request, ct));
 }

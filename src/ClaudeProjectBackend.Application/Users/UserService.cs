@@ -14,15 +14,18 @@ public sealed class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly ISnowflakeIdGenerator _snowflake;
+    private readonly ICurrentUserService _currentUser;
 
     public UserService(
         IUserRepository userRepository,
         IPasswordHasher passwordHasher,
-        ISnowflakeIdGenerator snowflake)
+        ISnowflakeIdGenerator snowflake,
+        ICurrentUserService currentUser)
     {
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
         _snowflake = snowflake;
+        _currentUser = currentUser;
     }
 
     public async Task<UserResponse> GetAsync(long id, CancellationToken ct = default)
@@ -79,6 +82,9 @@ public sealed class UserService : IUserService
     {
         var user = await _userRepository.GetByIdAsync(id, ct)
             ?? throw new NotFoundException(nameof(User), id);
+
+        if (_currentUser.UserId != id && !_currentUser.IsAdmin)
+            throw new ForbiddenException("You can only update your own avatar.");
 
         user.AvatarUrl = string.IsNullOrWhiteSpace(request.AvatarUrl) ? null : request.AvatarUrl.Trim();
 

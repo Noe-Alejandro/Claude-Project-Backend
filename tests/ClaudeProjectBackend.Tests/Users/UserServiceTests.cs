@@ -5,12 +5,16 @@ public sealed class UserServiceTests
     private readonly IUserRepository _userRepository = Substitute.For<IUserRepository>();
     private readonly IPasswordHasher _passwordHasher = Substitute.For<IPasswordHasher>();
     private readonly ISnowflakeIdGenerator _snowflake = Substitute.For<ISnowflakeIdGenerator>();
+    private readonly ICurrentUserService _currentUser = Substitute.For<ICurrentUserService>();
     private readonly UserService _sut;
 
     public UserServiceTests()
     {
         _snowflake.NewId().Returns(375296004000000001L);
-        _sut = new UserService(_userRepository, _passwordHasher, _snowflake);
+        // Default: act as the owner of id 375296004000000001, non-admin
+        _currentUser.UserId.Returns(375296004000000001L);
+        _currentUser.IsAdmin.Returns(false);
+        _sut = new UserService(_userRepository, _passwordHasher, _snowflake, _currentUser);
     }
 
     // ── GetAsync ──────────────────────────────────────────────────────────────
